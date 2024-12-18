@@ -1,14 +1,29 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Text,StyleSheet,View,Image,TextInput,TouchableOpacity,Alert } from "react-native";
+import { Ionicons } from '@expo/vector-icons'; // Importa Ionicons de Expo
 
 import appFirebase from '../credenciales'
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
+import {getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut} from 'firebase/auth'
 const auth = getAuth(appFirebase)
 
 export default function Login(props) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
 
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
+    useEffect(() => {
+        // Listener para detectar cambios en la autenticación
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // Si el usuario no está autenticado, limpiar los campos de entrada
+                setEmail('');
+                setPassword('');
+            }
+        });
+
+        // Limpiar la suscripción cuando el componente se desmonte
+        return () => unsubscribe();
+    }, []);
 
     const logueo = async() => {
         try {
@@ -18,6 +33,9 @@ export default function Login(props) {
         } catch (error) {
             console.log(error);
             Alert.alert('Error','Usuario o contraseña incorrectos')
+            // Limpiar los campos de entrada si hay un error
+            setEmail('');
+            setPassword('');
         }
     }
 
@@ -26,35 +44,43 @@ export default function Login(props) {
     }
 
     return (
-      <View style={styles.padre}>
-        
-        <View>
-            <Image source={require('../assets/icon.png')} style={styles.profile} />
+        <View style={styles.padre}>
+            <View>
+                <Image source={require('../assets/icon.png')} style={styles.profile} />
+            </View>
+            <View style={styles.tarjeta}>
+                <View style={styles.cajaTexto}>
+                    <TextInput 
+                        placeholder="correo@gmail.com" 
+                        style={{paddingHorizontal:15}} 
+                        onChangeText={(text)=>setEmail(text)} 
+                        value={email} 
+                    />
+                </View>
+                <View style={styles.cajaTexto}>
+                    <TextInput 
+                        placeholder="contraseña" 
+                        style={{paddingHorizontal:15, flex: 1}} 
+                        onChangeText={(text)=>setPassword(text)} 
+                        value={password} 
+                        secureTextEntry={!showPassword} 
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.icon}>
+                        <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="grey" />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.PadreBoton}>
+                    <TouchableOpacity style={styles.cajaBoton} onPress={logueo} >
+                        <Text style={styles.textoBoton}>Sign In</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.Registro}>
+                    <TouchableOpacity style={styles.RegistroBoton} onPress={Registro}>
+                        <Text>¿No tienes cuenta? Regístrate</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
-
-        <View style={styles.tarjeta}>
-            <View style={styles.cajaTexto}>
-                <TextInput placeholder="correo@gmail.com" style={{paddingHorizontal:15}} 
-                onChangeText={(text)=>setEmail(text)} />
-            </View>
-            <View style={styles.cajaTexto}>
-                <TextInput placeholder="contrseña" style={{paddingHorizontal:15}} 
-                onChangeText={(text)=>setPassword(text)} secureTextEntry={true} />
-            </View>
-
-            <View style={styles.PadreBoton}>
-                <TouchableOpacity style={styles.cajaBoton} onPress={logueo} >
-                    <Text style={styles.textoBoton}>Sign In</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.Registro}>
-                <TouchableOpacity style={styles.RegistroBoton} onPress={Registro}>
-                    <Text>¿No tienes cuenta? Registrate</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-      </View>
     );
 }
 
@@ -63,7 +89,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'wwhite'
+        backgroundColor: 'white'
     },
     profile: {
         width: 100,
@@ -87,10 +113,15 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     cajaTexto: {
+        flexDirection: 'row',
+        alignItems: 'center',
         paddingVertical: 20,
         backgroundColor: '#cccccc90',
         borderRadius: 30,
         marginVertical: 10
+    },
+    icon: {
+        paddingHorizontal: 10
     },
     PadreBoton: {
         alignItems: 'center'

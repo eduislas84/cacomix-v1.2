@@ -4,7 +4,7 @@ import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';  // Añadido
+import { Ionicons } from '@expo/vector-icons';
 
 import Login from './screens/Login';
 import Home from './screens/Home';
@@ -13,11 +13,11 @@ import Ajustes from './screens/Ajustes';
 import Juegos from './screens/inicio/Juegos';
 import Perfil from './screens/Perfil';
 import Juego1 from './screens/inicio/Juegos/Juego1';
-import Ajustes1 from './screens/Ajustes1';
-import Ajustes2 from './screens/Ajustes2';
+import Ajustes1 from './screens/Ajustes/Ajustes1';
+import Ajustes2 from './screens/Ajustes/Ajustes2';
 import Glosario from './screens/inicio/Glosario';
-import Niveles from './screens/inicio/Niveles';  // Corregido
-import GlosarioNahualt from './screens/inicio/Glosario/Glosario_Nahualt'; // Corregido
+import Niveles from './screens/inicio/Niveles';
+import GlosarioNahualt from './screens/inicio/Glosario/Glosario_Nahualt';
 import Nivel1 from './screens/inicio/Niveles/Nivel1';
 import Nivel2 from './screens/inicio/Niveles/Nivel2';
 import Nivel3 from './screens/inicio/Niveles/Nivel3';
@@ -28,7 +28,7 @@ import Nivel7 from './screens/inicio/Niveles/Nivel7';
 import Nivel8 from './screens/inicio/Niveles/Nivel8';
 import Nivel9 from './screens/inicio/Niveles/Nivel9';
 import Nivel10 from './screens/inicio/Niveles/Nivel10';
-import Juego2 from './screens/inicio/Juegos/Juego2';  
+import Juego2 from './screens/inicio/Juegos/Juego2';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,7 +48,6 @@ function MyTabs() {
             iconName = focused ? 'person' : 'person-outline';
           }
 
-          // Puedes retornar cualquier componente aquí
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#EC5B2A',
@@ -64,24 +63,24 @@ function MyTabs() {
 
 function MyStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="CacomixLearn">
       <Stack.Screen
         name="CacomixLearn"
         component={Login}
         options={{
           title: "CacomixLearn",
           headerTintColor: "white",
-          headerTitleAlign: "center", // Corregido
+          headerTitleAlign: "center",
           headerStyle: { backgroundColor: '#EC5B2A' },
         }}
       />
       <Stack.Screen
         name="Home"
-        component={MyTabs} // Cambiado para usar MyTabs
+        component={MyTabs}
         options={{
           title: "CacomixLearn",
           headerTintColor: "white",
-          headerTitleAlign: "center", // Corregido
+          headerTitleAlign: "center",
           headerStyle: { backgroundColor: '#EC5B2A' },
         }}
       />
@@ -245,7 +244,7 @@ function MyStack() {
           headerStyle: { backgroundColor: '#EC5B2A' },
         }}
       />
-      <Stack.Screen
+            <Stack.Screen
         name="Nivel7"
         component={Nivel7}
         options={{
@@ -295,7 +294,6 @@ function MyStack() {
           headerStyle: { backgroundColor: '#EC5B2A' },
         }}
       />
-
     </Stack.Navigator>
   );
 }
